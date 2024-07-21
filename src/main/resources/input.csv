@@ -1,0 +1,10 @@
+field1(String), field2(String), field3(String), field4(String), field5(Decimal), refkey1(String), refkey2(String)
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2
+field1,field2,field3,field4,10.7,refkey1,refkey2

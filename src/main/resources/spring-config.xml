@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
+
+    <!-- Job Repository Definition -->
+    <bean id="jobRepository"
+          class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+    <!-- Job Launcher Definition -->
+    <bean id="jobLauncher"
+          class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+        <property name="jobRepository" ref="jobRepository"/>
+    </bean>
+
+    <!-- Transaction Manager -->
+    <bean id="transactionManager"
+          class="org.springframework.batch.support.transaction.ResourcelessTransactionManager"/>
+
+    <!-- Job Definition -->
+    <batch:job id="csvJob">
+        <batch:step id="step1">
+            <batch:tasklet>
+                <batch:chunk reader="csvItemReader" writer="csvItemWriter" commit-interval="10"/>
+            </batch:tasklet>
+        </batch:step>
+    </batch:job>
+
+    <!-- CSV Item Reader Definition -->
+    <bean id="csvItemReader" class="org.springframework.batch.item.file.FlatFileItemReader">
+        <property name="resource" value="classpath:input.csv"/>
+        <property name="lineMapper">
+            <bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
+                <property name="lineTokenizer">
+                    <bean class="org.springframework.batch.item.file.transform.DelimitedLineTokenizer">
+                        <property name="names" value="field1, field2, field3, field4, field5, refkey1, refkey2"/>
+                    </bean>
+                </property>
+                <property name="fieldSetMapper">
+                    <bean class="com.batch_file_writer.BatchFileWriter.entity.FileInputFieldSetMapper   "/>
+                </property>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- CSV Item Writer Definition -->
+    <bean id="csvItemWriter" class="org.springframework.batch.item.file.FlatFileItemWriterBuilder">
+        <property name="resource" value="classpath:output.csv"/>
+        <property name="lineAggregator">
+            <bean class="org.springframework.batch.item.file.transform.DelimitedLineAggregator">
+                <property name="fieldExtractor">
+                    <bean class="org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor">
+                        <property name="names" value="field1"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</beans>
